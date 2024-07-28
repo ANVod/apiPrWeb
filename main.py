@@ -1,16 +1,41 @@
-# This is a sample Python script.
+# импортируем Flask и библиотеку Request
+from flask import Flask, render_template, request
+import requests
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# импортируем объект класса Flask
+app = Flask(__name__)
+
+# формируем путь и методы GET и POST
+@app.route('/', methods=['GET', 'POST'])
+# создаем функцию с переменной weather, где мы будем сохранять погоду
+def index():
+    weather = None
+    news = None
+    # формируем условия для проверки метода. Форму мы пока не создавали, но нам из неё необходимо будет взять только город.
+    if request.method == 'POST':
+        # этот определенный город мы будем брать для запроса API
+        city = request.form['city']
+        # вызовем функцию для получения погоды
+        weather = get_weather(city)
+        news = get_news()
+    return render_template("index.html", weather=weather, news=news)
+
+# в функции прописываем город, который мы будем вводить в форме
+def get_weather(city):
+    api_key = "6171908ee435ba1d8312eb68f7f00587"
+    # Адрес, по котором мы будем отправлять запрос. Не забываем указывать f строку.
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=ru"
+    # для получения результата нам понадобится модуль requests
+    response = requests.get(url)
+    # прописываем формат возврата результата
+    return response.json()
+
+def get_news():
+   api_key = "d7737b652b334087af0c428ae174f212"
+   url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}"
+   response = requests.get(url)
+   return response.json().get('articles', [])
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app.run(debug=True)
