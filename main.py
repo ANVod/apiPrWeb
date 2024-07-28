@@ -22,7 +22,7 @@ def index():
 
 # в функции прописываем город, который мы будем вводить в форме
 def get_weather(city):
-    api_key = "6171908ee435ba1d8312eb68f7f00587"
+    api_key = "your_api_key"
     # Адрес, по котором мы будем отправлять запрос. Не забываем указывать f строку.
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=ru"
     # для получения результата нам понадобится модуль requests
@@ -31,7 +31,7 @@ def get_weather(city):
     return response.json()
 
 def get_news():
-   api_key = "d7737b652b334087af0c428ae174f212"
+   api_key = "your_api_key"
    url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}"
    response = requests.get(url)
    return response.json().get('articles', [])
